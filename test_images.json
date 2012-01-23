@@ -1,0 +1,201 @@
+{
+  "data": [
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Beth McGreer"
+          }
+        ]
+      },
+      
+      "name" : "A big bauble",
+      "picture": "http://localhost/snaps/images/test_photos/bauble.jpg",
+      "height": 540,
+      "width": 720
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Jolly Harbour"
+          }
+        ]
+      },
+      
+      "name" : "Boats in Jolly Harbour",
+      "picture": "http://localhost/snaps/images/test_photos/boats.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "James O'Brien"
+          },
+          {
+            "name" : "Cocobay"
+          }
+        ]
+      },
+      
+      "name" : "Tea time at Cocobay",
+      "picture": "http://localhost/snaps/images/test_photos/deck.jpg",
+      "height": 720,
+      "width": 960
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Statue of Liberty"
+          }
+        ]
+      },
+      
+      "name" : "Liberty",
+      "picture": "http://localhost/snaps/images/test_photos/liberty.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Lizard"
+          }
+        ]
+      },
+      
+      "name" : "A light lizard",
+      "picture": "http://localhost/snaps/images/test_photos/lizard.jpg",
+      "height": 592,
+      "width": 453
+    },
+    {
+      "name" : "Sunset...",
+      "picture": "http://localhost/snaps/images/test_photos/palm_tree_sepia.jpg",
+      "height": 960,
+      "width": 720
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Pool"
+          }
+        ]
+      },
+      
+      "name" : "By the pool",
+      "picture": "http://localhost/snaps/images/test_photos/palm_tree.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Boston"
+          },
+          {
+            "name" : "Quincy Market"
+          }
+        ]
+      },
+      
+      "name" : "Quincy market",
+      "picture": "http://localhost/snaps/images/test_photos/quincy.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Rockerfeller"
+          }
+        ]
+      },
+      
+      "name" : "Rockerfeller Center",
+      "picture": "http://localhost/snaps/images/test_photos/rockerfeller.jpg",
+      "height": 720,
+      "width": 540
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "James O'Brien"
+          },
+          {
+            "name" : "Beth McGreer"
+          }
+        ]
+      },
+      
+      "name" : "Tourists!",
+      "picture": "http://localhost/snaps/images/test_photos/rockerfeller2.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Cocobay"
+          }
+        ]
+      },
+      
+      "name" : "Cocobay",
+      "picture": "http://localhost/snaps/images/test_photos/test_photo.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Empire State Building"
+          }
+        ]
+      },
+      
+      "name" : "Empire State",
+      "picture": "http://localhost/snaps/images/test_photos/test_photo2.jpg",
+      "height": 453,
+      "width": 604
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Boston"
+          }
+        ]
+      },
+      
+      "name" : "I don't know what this building is called...",
+      "picture": "http://localhost/snaps/images/test_photos/town.jpg",
+      "height": 592,
+      "width": 453
+    },
+    {
+      "tags": {
+        "data" : [
+          {
+            "name" : "Old Town Trolley Tours"
+          }
+        ]
+      },
+      
+      "name" : "Old Town Trolleys",
+      "picture": "http://localhost/snaps/images/test_photos/trolley.jpg",
+      "height": 592,
+      "width": 453
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html
+      {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body
+      {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    
+      #pic
+      {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+        
+        background-image: url(test_photo.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: top left;
+        
+        filter: url(../style/masks.svg#pic_blur);
+        -webkit-mask-box-image: url(../style/turb_mask.png);
+
+        filter: blur(4px);
+      }
+      
+      .ctrls
+      {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        z-index: 20;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id='pic'></div>
+  
+<!--
+    <svg width='0' height='0'>
+      <filter id='pic_blur'>
+        <feGaussianBlur stdDeviation='4'></feGaussianBlur>
+      </filter>
+    </svg>
+
+    <svg xmlns:xlink='http://www.w3.org/1999/xlink' id='pic' width='100%' height='100%'>
+      <image preserveAspectRatio='none' xlink:href='./test_photo.jpg' width='100%' height='100%'></image>
+    </svg>
+    
+
+    <script language="Javascript">
+      var blurred = false;
+      var imgToggled = false;
+      
+      function toggleBlur(ipt) {
+        var pic = document.getElementById('pic');
+        if (pic === null) {
+          console.log('No picture!');
+          return;
+        }
+
+        var i = pic.getElementsByTagName('image');
+        if (i.length > 0) {
+          var f = blurred ? '' : 'filter:url(#pic_blur)';
+          var l = blurred ? 'blur' : 'de-blur';
+          i[0].setAttribute('style', f);
+          ipt.setAttribute('value', l);
+        }
+        
+        blurred = !blurred;
+      }
+
+      
+      function toggleImage() {
+        var pic = document.getElementById('pic');
+        if (pic === null) {
+          console.log('No picture!');
+          return;
+        }
+
+        var i = pic.getElementsByTagName('image');
+        if (i.length > 0) {
+          var imgRef = imgToggled ? './test_photo.jpg' : './test_photo2.jpg';
+          // TODO: To get opera to work, we need to just set 'href'
+          // not xlink:href
+          i[0].setAttribute('xlink:href', imgRef);
+        }
+        
+        imgToggled = !imgToggled;
+
+      }
+      
+
+      if (navigator.userAgent.indexOf("WebKit") !== -1) {
+        console.log('here');
+        
+        var resizeTimer;
+        var pic = document.getElementById('pic');
+
+        var resizeBg = function() {
+          var bg = pic.getElementsByTagName('image')[0];
+          bg.setAttribute('width', '100%');
+          bg.setAttribute('height', '100%');
+
+          console.log('set');
+        };
+
+        //document.addEventListener('DOMContentLoaded', resizeBg, false);
+       
+        pic.onLoad = resizeBg();
+        
+        window.onresize = function() {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(resizeBg, 100);
+        };
+        
+        document.body.onLayoutComplete = resizeBg()
+        
+      }
+    </script>
+    
+    <div class='ctrls'>
+      <input type='button' value='blur' onclick='toggleBlur(this)'></input>
+      <input type="button" value="change picture" onclick="toggleImage()"></input>
+    </div>
+    -->
+    
+  </body>
+</html>

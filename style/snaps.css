@@ -1,0 +1,205 @@
+@font-face {
+    font-family: 'ColaborateThinRegular';
+    src: url('./fonts/Colaborate/ColabThi-webfont.eot');
+    src: url('./fonts/Colaborate/ColabThi-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/Colaborate/ColabThi-webfont.woff') format('woff'),
+         url('./fonts/Colaborate/ColabThi-webfont.ttf') format('truetype'),
+         url('./fonts/Colaborate/ColabThi-webfont.svg#ColaborateThinRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'OstrichSansRoundedMedium';
+    src: url('./fonts/Ostrich/ostrich-rounded-webfont.eot');
+    src: url('./fonts/Ostrich/ostrich-rounded-webfont.eot?#iefix') format('embedded-opentype'),
+         url('./fonts/Ostrich/ostrich-rounded-webfont.woff') format('woff'),
+         url('./fonts/Ostrich/ostrich-rounded-webfont.ttf') format('truetype'),
+         url('./fonts/Ostrich/ostrich-rounded-webfont.svg#OstrichSansRoundedMedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+html
+{
+  width: 100%;
+  height: 100%;
+}
+
+body
+{
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  
+  font-family: HelveticaNeue, Arial, sans-serif;
+}
+
+h1, h2
+{
+  padding: 0;
+  margin: 0;
+}
+
+#sn-album, #sn-album-bg
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -ms-background-size: cover;
+  background-size: cover;
+  
+  background-position: top left;
+  background-repeat: no-repeat;
+}
+
+#sn-album-bg
+{
+  background-image: url(../images/test_photos/test_photo2.jpg);
+}
+
+/* Blur the given element by various means */
+.blurred
+{
+  /* Fake a gaussian blur in webkit by overlaying a png
+     with a noisy alpha channel */
+/*  -webkit-mask-box-image: url(./turb_mask.png); */
+
+  /* Blur in FF */
+  filter: url(./masks.svg#pic_blur);
+  
+  /* Blur in IE */
+  filter: progid:DXImageTransform.Microsoft.Blur(strength=4);
+  
+  /* CSS3 filters. Arriving 'real soon now' */
+  -webkit-filter: blur(4px);
+  filter: blur(4px);
+
+}
+
+
+
+#sn-album-header
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 137px;
+  
+  background-color: rgba(153, 134, 117, 0.3);
+}
+
+#sn-album-info
+{
+  height: 137px;
+  float: right;
+  color: rgb(247, 242, 235);
+  text-shadow: 0px 1px 1px rgba(0,0,0,0.6);
+  padding: 8px 20px 0px 20px;
+}
+
+#sn-album-name
+{
+  font-family: "OstrichSansRoundedMedium", "Segoe UI Light", "Segoe UI", sans-serif;
+  font-size: 72px;
+  font-weight: normal;
+  text-align: right;
+}
+
+#sn-album-tags
+{
+  font-family: "ColaborateThinRegular", "Segoe UI Light", "Segoe UI", sans-serif;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: normal;
+  text-overflow: ellipsis-word;
+  overflow: hidden;
+  
+  height: 26px;
+  max-height: 26px;  
+}
+
+#sn-album-tags .sn-album-tag
+{
+  padding-left: 1em;
+}
+
+#sn-album-tags .sn-album-tag:first-child
+{
+  padding-left: 0;
+}
+
+
+#sn-photos
+{
+  position: absolute;
+  background-color: rgba(199, 178, 153, 0.3);
+  top: 137px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  padding: 12px;
+  
+  overflow: auto;
+}
+
+#sn-photos .sn-photo
+{
+  width: 220px;
+  height: 164px;
+  background-position: center center;
+  background-origin: border-box;
+  float: left;
+  
+  border-style: solid;
+  border-width: 1px;
+  /*border-color: rgba(199, 178, 153, 0.9) rgba(115, 101, 88, 0.6) rgba(115, 101, 88, 0.6) rgba(199, 178, 153, 0.9); */
+  border-color: rgba(255, 255, 255, 0.3) rgba(115, 101, 88, 0.6) rgba(115, 101, 88, 0.6) rgba(255, 255, 255, 0.3);  
+  margin: 4px;
+  
+  box-shadow: 0px 2px 4px rgba(115, 101, 88, 1);
+  
+  position: relative;
+}
+
+#sn-photos .sn-photo .sn-legend
+{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  height: 26px;
+  line-height: 26px;
+  overflow: hidden;
+  
+  padding: 0px 8px;
+
+  font-family: ColaborateThinRegular, HelveticaNeue, Arial, sans-serif;
+  color: rgb(241, 229, 212);
+  background-color: rgba(0,0,0,0.3);
+  display: none
+}
+
+#sn-photos .sn-photo:hover .sn-legend
+{
+  display: block;
+}
+
+#sn-photos.sn-strip-mode .sn-photo
+{
+  background-position: 0 0;
+  background-size: cover;
+}
