@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Snaps Photo Album</title>
     <link rel='stylesheet' href='./style/snaps.css'></link>
+    <link rel='stylesheet' href='./style/social_buttons.css'></link>    
   </head>
   <body>
 
@@ -34,55 +35,148 @@
         </header>
       </section>
 
-      <section id='sn-photos'>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/bauble.jpg)'>
-          <div class='sn-legend'>A big bauble</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/boats.jpg)'>
-          <div class='sn-legend'>Boats at Jolly Harbour</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/deck.jpg)'>
-          <div class='sn-legend'>Tea time at Cocobay</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/liberty.jpg)'>
-          <div class='sn-legend'>Liberty</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/lizard.jpg)'>
-          <div class='sn-legend'>A light lizard</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree_sepia.jpg)'>
-          <div class='sn-legend'>Sunset...</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree.jpg)'>
-          <div class='sn-legend'>By the pool</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/quincy.jpg)'>
-          <div class='sn-legend'>Quincy market</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella.jpg)'>
-          <div class='sn-legend'>At Rockerfeller Center</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella2.jpg)'>
-          <div class='sn-legend'>Tourists!</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo.jpg)'>
-          <div class='sn-legend'>Cocobay</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo2.jpg)'>
-          <div class='sn-legend'>Gotham</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/town.jpg)'>
-          <div class='sn-legend'>I've forgotten what this building is</div>
-        </div>
-        <div class='sn-photo' style='background-image: url(./images/test_photos/trolley.jpg)'>
-          <div class='sn-legend'>Old Town Trolleys</div>
+      <div class='sn-photo' id='sn-overlay-photo'></div>
+      
+      <section id='sn-facebook-login'>
+        <button class='social_buttons sb_24 sb_facebook sn-login-button'>
+          <span>Sign in to Facebook...</span>
+        </button>
+        <div class='sn-dialog-instructions'>
+          <p>
+            Log into Facebook to see your photos.
+          </p>
+          <p>
+            Snaps will <strong>not</strong> be able to see your Facebook password.
+            Your password remains secure and is sent directly to Facebook.
+          </p>
         </div>
       </section>
-    </section>
+      
+      <section id='sn-photos'>
 
+        <div id='sn-photo-holder'>
+          <!--
+          <div class='sn-photo' style='background-image: url(./images/test_photos/bauble.jpg)'>
+            <div class='sn-legend'>A big bauble</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/boats.jpg)'>
+            <div class='sn-legend'>Boats at Jolly Harbour</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/deck.jpg)'>
+            <div class='sn-legend'>Tea time at Cocobay</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/liberty.jpg)'>
+            <div class='sn-legend'>Liberty</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/lizard.jpg)'>
+            <div class='sn-legend'>A light lizard</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree_sepia.jpg)'>
+            <div class='sn-legend'>Sunset...</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree.jpg)'>
+            <div class='sn-legend'>By the pool</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/quincy.jpg)'>
+            <div class='sn-legend'>Quincy market</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella.jpg)'>
+            <div class='sn-legend'>At Rockerfeller Center</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella2.jpg)'>
+            <div class='sn-legend'>Tourists!</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo.jpg)'>
+            <div class='sn-legend'>Cocobay</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo2.jpg)'>
+            <div class='sn-legend'>Gotham</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/town.jpg)'>
+            <div class='sn-legend'>I've forgotten what this building is</div>
+          </div>
+          <div class='sn-photo' style='background-image: url(./images/test_photos/trolley.jpg)'>
+            <div class='sn-legend'>Old Town Trolleys</div>
+          </div>
+          -->
+        </div>
+        
+
+        <section id='sn-photo-info'>
+          <h1>Boston Court House</h1>
+          <section id='sn-photo-comments'>
+            <div class='sn-comment'>
+              <div class='sn-stamp'>
+                <img class='sn-author-pic' src='./images/author_pic.jpg' />
+              </div>
+              <div class='sn-comment-text'>
+                <span class='sn-author'>Isobel Curtis Smith</span>
+                <span class='sn-text'>
+                  Clearly maximum assistance of two to eat said lobster ;-)
+                  Happy New Year x
+                </span>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+      
+
+    </section>
+    
+    <section id='sn-debug-ctrls'>
+      <input type='text' value="j.facebook.loggedin" id='not_name'></input>
+      <input type='button' value='Test notifications' id='notification_button'></input>
+      <input type="button" value="Load pictures" id='load_button'></input>
+      <input type="button" value="Show strip" id='strip_button'></input>
+      <input type="button" value="Show grid" id='grid_button'></input>
+    </section>
+    
+    <div id='fb-root'></div>
+
+<!--    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script> -->
+    <script src='./script/jquery-1.7.1.min.js'></script>
     <script src='./script/base.js'></script>
     <script src='./script/notification_center.js'></script>
     <script src='./script/fb.js'></script>
     <script src='./script/snaps.js'></script>
+    
+    
+    <script>
+        J.CreateGlobalNotificationCenter();
+        var snaps = new J.Snaps();
+      
+      J.Notifications.Subscribe('j.facebook.*', function(k, s, d) { console.log('Got: '+k); });
+
+      $(document).ready(function() {
+        $('#notification_button').click(
+          function() {
+            var n = $('#not_name').val();
+            J.Notifications.Notify(n, null, null);
+          });
+          
+        $('#load_button').click(
+          function() { 
+            snaps.LoadPictures('http://localhost/snaps/test_images.json');
+          });
+          
+        $('#strip_button').click(
+          function() {
+            snaps.ShowAsStrip();
+          }
+        );
+        
+        $('#grid_button').click(
+          function() {
+            snaps.ShowAsGrid();
+          }
+        );
+        
+        J.Facebook.Init();
+        J.Facebook.Start();
+        
+        //snaps.LoadPictures('http://localhost/snaps/test_images.json');
+      });
+    </script>
   </body>
 </html>

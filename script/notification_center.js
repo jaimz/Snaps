@@ -245,3 +245,8 @@ J.CreateNotificationCenter = (function() {
     }
   };
 });
+
+
+J.CreateGlobalNotificationCenter = function() {
+  J.Notifications = J.CreateNotificationCenter();
+};

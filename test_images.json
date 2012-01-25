@@ -120,7 +120,7 @@
       },
       
       "name" : "Rockerfeller Center",
-      "picture": "http://localhost/snaps/images/test_photos/rockerfeller.jpg",
+      "picture": "http://localhost/snaps/images/test_photos/rockerfella.jpg",
       "height": 720,
       "width": 540
     },
@@ -137,7 +137,7 @@
       },
       
       "name" : "Tourists!",
-      "picture": "http://localhost/snaps/images/test_photos/rockerfeller2.jpg",
+      "picture": "http://localhost/snaps/images/test_photos/rockerfella2.jpg",
       "height": 453,
       "width": 604
     },
@@ -194,8 +194,8 @@
       
       "name" : "Old Town Trolleys",
       "picture": "http://localhost/snaps/images/test_photos/trolley.jpg",
-      "height": 592,
-      "width": 453
+      "height": 453,
+      "width": 604
     }
   ]
 }

@@ -9,6 +9,7 @@ J.Facebook = (function() {
   _session = null;
 
   // Initialise the module...
+  // TODO: Err - what should this actuall do??
   var _init = function() {
     if (_initialised === true)
       return;
@@ -39,10 +40,12 @@ J.Facebook = (function() {
   // 'j.facebook.loggedout' notification if we are not.
   var _checkLogin = (function() {
     var __loginStatusResult = function(response) {
+      console.log('Got check login response: ' + response);
+
       _session = response.authResponse;
 
       var key = (_session === null) ? 'j.facebook.loggedout' : 'j.facebook.loggedin';
-      J.NotificationCenter.Notify(key, J.Facebook, null);
+      J.Notifications.Notify(key, J.Facebook, null);
     };
 
     return function() {
@@ -58,7 +61,7 @@ J.Facebook = (function() {
       _session = response.authResponse;
       
       var key = (_session === null) ? 'j.facebook.loggedout' : 'j.facebook.loggedin';
-      J.NotificationCenter.Notify(key, J.Facebook, null);
+      J.Notifications.Notify(key, J.Facebook, null);
     };
 
     return function() {
@@ -76,9 +79,9 @@ J.Facebook = (function() {
         var msg = "Could not log out"
         if (response && response.error)
           msg = msg + ': '+response.error;
-        J.NotificationCenter.Notify('fb.error.message', msg);
+        J.Notifications.Notify('fb.error.message', msg);
       } else {
-        J.NotificationCenter.Notify('fb.loggedout', J.Facebook, null);
+        J.Notifications.Notify('fb.loggedout', J.Facebook, null);
       }
     };
 
@@ -110,5 +113,5 @@ window.fbAsyncInit = function() {
   });
 
   // Let our object know that the FB API is ready to use
-  J.Facebook.Ready();
+  J.Facebook.CheckLogin();
 };

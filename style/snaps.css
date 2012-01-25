@@ -76,7 +76,7 @@ h1, h2
 /*  -webkit-mask-box-image: url(./turb_mask.png); */
 
   /* Blur in FF */
-  filter: url(./masks.svg#pic_blur);
+  filter: url(./masks.svg#bg_blur);
   
   /* Blur in IE */
   filter: progid:DXImageTransform.Microsoft.Blur(strength=4);
@@ -155,7 +155,32 @@ h1, h2
   overflow: auto;
 }
 
-#sn-photos .sn-photo
+.sn-strip-mode #sn-photo-holder
+{
+  padding-left: 320px;
+}
+
+.sn-transition-opacity
+{
+  -webkit-transition-property: opacity;
+  -webkit-transition-duration: 0.2s;
+  -webkit-transition-timing-function: linear;  
+  
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.2s;
+  -moz-transition-timing-function: linear;
+  
+  -ms-transition-property: opacity;
+  -ms-transition-duration: 0.5s;
+  -ms-transition-timing-function: ease-in;
+
+  -o-transition-property: opacity;
+  -o-transition-duration: 0.5s;
+  -o-transition-timing-function: ease-in;
+}
+
+
+.sn-photo
 {
   width: 220px;
   height: 164px;
@@ -172,6 +197,38 @@ h1, h2
   box-shadow: 0px 2px 4px rgba(115, 101, 88, 1);
   
   position: relative;
+  
+}
+
+#sn-overlay-photo.sn-photo
+{
+  position: absolute;
+  visibility: hidden;
+  background-color: rgba(0,0,0,0.4);
+/*  background-position: 0 0;
+  background-size: cover; */
+  z-index: 100;
+  box-shadow: none;
+}
+
+
+.sn-transition-bounds
+{
+  -webkit-transition-property: width, height;
+  -webkit-transition-duration: 0.5s;
+  -webkit-transition-timing-function: ease-in;  
+  
+  -moz-transition-property: width, height;
+  -moz-transition-duration: 0.5s;
+  -moz-transition-timing-function: ease-in;
+  
+  -ms-transition-property: width, height;
+  -ms-transition-duration: 0.5s;
+  -ms-transition-timing-function: ease-in;
+
+  -o-transition-property: width, height;
+  -o-transition-duration: 0.5s;
+  -o-transition-timing-function: ease-in;
 }
 
 #sn-photos .sn-photo .sn-legend
@@ -202,4 +259,137 @@ h1, h2
 {
   background-position: 0 0;
   background-size: cover;
+}
+
+
+#sn-debug-ctrls
+{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.sn-defocus
+{
+  opacity: 0.7;
+
+  /* Blur in FF */
+  filter: url(./masks.svg#pic_blur);
+  
+  /* Blur in IE */
+  filter: progid:DXImageTransform.Microsoft.Blur(strength=2);
+  
+
+  /* CSS3 filters. Arriving 'real soon now' */
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+
+}
+
+#sn-photo-info
+{
+  background-color: rgba(50, 48, 46, 0.9);
+  position: fixed;
+  width: 320px;
+  height: 100%;
+  z-index: 200;
+  overflow: auto;
+  top: 137px;
+  left: 0; 
+  
+  display: none;
+}
+
+#sn-photo-info h1
+{
+  height: 37px;
+  background-color: rgba(0,0,0,0.4);
+  color: rgb(241, 229, 212);
+  font-family: "ColaborateThinRegular", "Segoe UI Light", "Segoe UI", sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 37px;
+  padding-left: 16px;
+}
+
+#sn-photo-comments
+{
+  padding-top: 8px;
+}
+
+.sn-comment
+{
+  -moz-box-sizing: border-box;
+  width: 100%;
+  display: table;
+  
+  font-size: 13px;
+  color: #eee;
+}
+
+.sn-stamp
+{
+  display: table-cell;
+  width:56px;
+  text-align: center;
+  vertical-align: top;
+}
+
+.sn-author-pic
+{
+  width: 32px;
+  height: 32px;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.65);
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.3) rgba(115, 101, 88, 0.6) rgba(115, 101, 88, 0.6) rgba(255, 255, 255, 0.3);
+}
+
+.sn-comment-text
+{
+  display: table-cell;
+  vertical-align: top;
+  padding-right: 16px;
+}
+
+
+#sn-facebook-login
+{
+  position: absolute;
+  width: 300px;
+  height: 150px;
+  
+  margin-left: auto;
+  margin-right: auto;
+  top: 150px;
+  
+  text-align: center;
+  
+  background-color: rgba(50, 48, 46, 0.9);
+  z-index: 200;
+  
+  padding: 1em;
+  
+  left: 50%;
+  top: 150px;
+  margin-left: -150px;
+  
+  border-radius: 8px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+}
+
+
+#sn-facebook-login .sn-login-button
+{
+  display: inline-block;
+}
+
+
+#sn-facebook-login .sn-dialog-instructions
+{
+  font-size: 13px;
+  color: rgb(241, 229, 212);
+  text-align: left;
+  padding: 1em;
 }
