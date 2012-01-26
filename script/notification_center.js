@@ -247,6 +247,5 @@ J.CreateNotificationCenter = (function() {
 });
 
 
-J.CreateGlobalNotificationCenter = function() {
-  J.Notifications = J.CreateNotificationCenter();
-};
+
+J.Notifications = J.CreateNotificationCenter();

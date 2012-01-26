@@ -10,6 +10,8 @@
 
     <section class='sn-controls'></section>
 
+
+
     <section id='sn-album'>
       <section id='sn-album-bg' class='blurred'></section>
       <section id='an-album-controls'></section>
@@ -17,28 +19,26 @@
       <section id='sn-album-header'>
         <header id='sn-album-info'>
           <hgroup>
-            <h1 id='sn-album-name'>Christmas Holiday 2011</h1>
+            <h1 id='sn-album-name'>Snaps 2012</h1>
             <h2 id='sn-album-tags'>
-              <span class='sn-album-tag'>Beth</span>
-              <span class='sn-album-tag'>James</span>
-              <span class='sn-album-tag'>Amy</span>
-              <span class='sn-album-tag'>Boston</span>
-              <span class='sn-album-tag'>New York</span>
-
-
-              <span class='sn-album-tag'>Lobster</span>
-              <span class='sn-album-tag'>Trolley Car</span>
-              <span class='sn-album-tag'>Staten Island</span>
-              
+              <span>
+                Log in to Facebook using the dialog below
+              </span>
             </h2>
           </hgroup>
         </header>
       </section>
 
+      <section id='sn-progress-message'>
+        <span></span>
+      </section>
+
       <div class='sn-photo' id='sn-overlay-photo'></div>
       
+      <!-- TODO: Put this back in! -->
+      <!--
       <section id='sn-facebook-login'>
-        <button class='social_buttons sb_24 sb_facebook sn-login-button'>
+        <button class='social_buttons sb_24 sb_facebook j-login-button'>
           <span>Sign in to Facebook...</span>
         </button>
         <div class='sn-dialog-instructions'>
@@ -50,72 +50,27 @@
             Your password remains secure and is sent directly to Facebook.
           </p>
         </div>
+        
+        <div class="sn-authenticating-message">
+          Signing into Facebook...
+        </div>
+        
       </section>
+      -->
       
       <section id='sn-photos'>
 
-        <div id='sn-photo-holder'>
-          <!--
-          <div class='sn-photo' style='background-image: url(./images/test_photos/bauble.jpg)'>
-            <div class='sn-legend'>A big bauble</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/boats.jpg)'>
-            <div class='sn-legend'>Boats at Jolly Harbour</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/deck.jpg)'>
-            <div class='sn-legend'>Tea time at Cocobay</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/liberty.jpg)'>
-            <div class='sn-legend'>Liberty</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/lizard.jpg)'>
-            <div class='sn-legend'>A light lizard</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree_sepia.jpg)'>
-            <div class='sn-legend'>Sunset...</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/palm_tree.jpg)'>
-            <div class='sn-legend'>By the pool</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/quincy.jpg)'>
-            <div class='sn-legend'>Quincy market</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella.jpg)'>
-            <div class='sn-legend'>At Rockerfeller Center</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/rockerfella2.jpg)'>
-            <div class='sn-legend'>Tourists!</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo.jpg)'>
-            <div class='sn-legend'>Cocobay</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/test_photo2.jpg)'>
-            <div class='sn-legend'>Gotham</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/town.jpg)'>
-            <div class='sn-legend'>I've forgotten what this building is</div>
-          </div>
-          <div class='sn-photo' style='background-image: url(./images/test_photos/trolley.jpg)'>
-            <div class='sn-legend'>Old Town Trolleys</div>
-          </div>
-          -->
-        </div>
+        <div id='sn-photo-holder'></div>
         
 
         <section id='sn-photo-info'>
-          <h1>Boston Court House</h1>
+          <h1>
+            <div id='sn-curr-photo'>
+            </div>
+            <span id='sn-photo-name'></span>
+          </h1>
           <section id='sn-photo-comments'>
-            <div class='sn-comment'>
-              <div class='sn-stamp'>
-                <img class='sn-author-pic' src='./images/author_pic.jpg' />
-              </div>
-              <div class='sn-comment-text'>
-                <span class='sn-author'>Isobel Curtis Smith</span>
-                <span class='sn-text'>
-                  Clearly maximum assistance of two to eat said lobster ;-)
-                  Happy New Year x
-                </span>
-              </div>
+            <div id='sn-comment-container'>
             </div>
           </section>
         </section>
@@ -143,10 +98,12 @@
     
     
     <script>
-        J.CreateGlobalNotificationCenter();
-        var snaps = new J.Snaps();
+
+      var snaps = new J.Snaps();
       
       J.Notifications.Subscribe('j.facebook.*', function(k, s, d) { console.log('Got: '+k); });
+
+      J.HasFBAuth(document.getElementById('sn-facebook-login'));
 
       $(document).ready(function() {
         $('#notification_button').click(
@@ -172,10 +129,10 @@
           }
         );
         
-        J.Facebook.Init();
-        J.Facebook.Start();
+        //J.Facebook.Init();
+        //J.Facebook.Start();
         
-        //snaps.LoadPictures('http://localhost/snaps/test_images.json');
+        snaps.LoadPictures('http://localhost/snaps/test_images2.json');
       });
     </script>
   </body>

@@ -31,9 +31,9 @@ html
 
 body
 {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
   padding: 0;
   
   font-family: HelveticaNeue, Arial, sans-serif;
@@ -66,6 +66,7 @@ h1, h2
 #sn-album-bg
 {
   background-image: url(../images/test_photos/test_photo2.jpg);
+/*    background-image: url(../images/HK_Skyline_1024.jpg); */
 }
 
 /* Blur the given element by various means */
@@ -160,6 +161,11 @@ h1, h2
   padding-left: 320px;
 }
 
+.sn-strip-mode #sn-photo-info
+{
+    display: block;
+}
+
 .sn-transition-opacity
 {
   -webkit-transition-property: opacity;
@@ -197,7 +203,6 @@ h1, h2
   box-shadow: 0px 2px 4px rgba(115, 101, 88, 1);
   
   position: relative;
-  
 }
 
 #sn-overlay-photo.sn-photo
@@ -205,8 +210,7 @@ h1, h2
   position: absolute;
   visibility: hidden;
   background-color: rgba(0,0,0,0.4);
-/*  background-position: 0 0;
-  background-size: cover; */
+  background-size: cover;
   z-index: 100;
   box-shadow: none;
 }
@@ -284,13 +288,13 @@ h1, h2
   /* CSS3 filters. Arriving 'real soon now' */
   -webkit-filter: blur(2px);
   filter: blur(2px);
-
+  
 }
 
 #sn-photo-info
 {
-  background-color: rgba(50, 48, 46, 0.9);
-  position: fixed;
+    background-color: rgba(50, 48, 46, 0.9);
+    position: fixed;
   width: 320px;
   height: 100%;
   z-index: 200;
@@ -298,34 +302,43 @@ h1, h2
   top: 137px;
   left: 0; 
   
-  display: none;
+  display: none;ooo
 }
 
 #sn-photo-info h1
 {
-  height: 37px;
-  background-color: rgba(0,0,0,0.4);
-  color: rgb(241, 229, 212);
+    height: 37px;
+    color: rgb(241, 229, 212);
   font-family: "ColaborateThinRegular", "Segoe UI Light", "Segoe UI", sans-serif;
   font-size: 18px;
   font-weight: normal;
-  line-height: 37px;
-  padding-left: 16px;
+}
+
+#sn-photo-name
+{
+    position: relative;
+    top: 0.4em;
 }
 
 #sn-photo-comments
 {
-  padding-top: 8px;
+  clear: both;
+    padding-top: 8px;
 }
 
 .sn-comment
 {
   -moz-box-sizing: border-box;
+  box-sizing: border-box;
+
   width: 100%;
   display: table;
   
   font-size: 13px;
   color: #eee;
+
+  padding-top: 1.2em;
+  padding-right: 1.1em;
 }
 
 .sn-stamp
@@ -340,7 +353,7 @@ h1, h2
 {
   width: 32px;
   height: 32px;
-  box-shadow: 0 2px 2px rgba(0,0,0,0.65);
+/*  box-shadow: 0 2px 2px rgba(0,0,0,0.65); */
   border-style: solid;
   border-width: 1px;
   border-color: rgba(255, 255, 255, 0.3) rgba(115, 101, 88, 0.6) rgba(115, 101, 88, 0.6) rgba(255, 255, 255, 0.3);
@@ -353,6 +366,11 @@ h1, h2
   padding-right: 16px;
 }
 
+.sn-author
+{
+    font-weight: bold;
+    padding-right: 0.5em;
+}
 
 #sn-facebook-login
 {
@@ -386,10 +404,74 @@ h1, h2
 }
 
 
-#sn-facebook-login .sn-dialog-instructions
+#sn-facebook-login .sn-dialog-instructions,
+#sn-facebook-login .sn-authenticating-message
 {
   font-size: 13px;
   color: rgb(241, 229, 212);
   text-align: left;
   padding: 1em;
+}
+
+#sn-facebook-login .sn-authenticating-message
+{
+  display: none;
+}
+
+#sn-facebook-login.j-authenticating .sn-authenticating-message
+{
+  display: block;
+}
+
+#sn-facebook-login.j-authenticated
+{
+  display: none;
+}
+
+
+#sn-progress-message
+{
+  background-color: rgba(216, 209, 203, 0.5);
+  position: absolute;
+  
+  font-family: "ColaborateThinRegular","Segoe UI Light","Segoe UI",sans-serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: normal;
+  height: 26px;
+  overflow: hidden;
+  
+  padding: 8px;
+  border-radius: 8px;
+  
+  color: #453d35;
+  
+  left: 20px;
+  top: 86px;
+}
+
+.sn-no-name,
+.sn-no-comments
+{
+    font-style: italic;
+    color: rgba(165, 156, 145, 0.5) !important;
+    font-family: "ColaborateThinRegular", "Segoe UI Light", "Segoe UI", sans-serif;
+    text-align: center;
+}
+
+#sn-curr-photo
+{
+    float: left;
+    width: 73px;
+    height: 54px;
+    margin-right: 16px;
+    
+    background-origin: border-box;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: rgba(0,0,0,0.2);
+
+    margin-top: 1px;
+    border-bottom-right-radius:6px;
 }

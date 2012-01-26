@@ -14,26 +14,95 @@ J.Snaps = function() {
   this._photosHolder = document.getElementById('sn-photo-holder');
 
   this._overlayPic = document.getElementById('sn-overlay-photo');
+  
+  this._albumName = document.getElementById('sn-album-name');
 
-  this._focusPic = null;
+  this._progressMessage = document.getElementById('sn-progress-message');
+
+  this._tagsHolder = document.getElementById('sn-album-tags');
+
+  this._currPhotoEl = document.getElementById('sn-curr-photo');
+  this._focussedPhoto = null;
   this._focussedOffset = 0;
 
   this._isStrip = false;
 
   this._inResizeHandler = false;
 
+  this._nameCount = {};
 
-  this._pictureClick = (function(that) {
-    return function(e) {
-      that._focusPic = this;
-      that.ShowAsStrip();
-    };
-  }(this));
+  this._photoInfo = document.getElementById('sn-photo-info');
+  this._photoTitle = document.getElementById('sn-photo-name');
+  this._photoComments = document.getElementById('sn-photo-comments');
+  this._commentContainer = document.getElementById('sn-comment-container');
+  
 
-  $(this._photosEl).on('click', '.sn-photo', {}, this._pictureClick);
+ 
+
+  this._processPictures = function() {
+    if (this._pictureData === null)
+      return;
+    
+    var l = this._pictureData.length;
+    if (l === null)
+      return;
+    
+    var pics = this._pictureData;
+    var curr = null;
+    var name = null;
+    var nCount = this._nameCount;
+    var tags = null;
+    for (var ctr = 0; ctr < l; ++ctr) {
+      curr = pics[ctr];
+      if (curr.hasOwnProperty('from')) {
+        name = curr.from.name;
+        if (name !== 'undefined')
+          if (nCount.hasOwnProperty(name))
+            nCount[name] = nCount[name] + 1;
+        else
+          nCount[name] = 1;
+      }
+      
+      if (curr.hasOwnProperty('tags')) {
+        tags = curr.tags;
+        tags = tags.data;
+        if (tags !== undefined) {
+          var tagsLen = tags.length;
+          for (var tagCtr = 0; tagCtr < tagsLen; ++tagCtr) {
+            name = tags[tagCtr].name;
+            if (name !== undefined) {
+              if (nCount.hasOwnProperty(name))
+                nCount[name] = nCount[name] + 1;
+              else
+                nCount[name] = 1;
+            }
+          }
+        }
+      }
+      
+      // TODO: comments
+    }
+    
+
+    if (this._tagsHolder) {
+      var holder = this._tagsHolder;
+      while (holder.childElementCount > 0) {
+        holder.removeChild(holder.firstChild);
+      }
+      
+      var tagSpan = null;
+      // Can get away with this but it's pretty crappy - need to revisit this method
+      for (var t in this._nameCount) {
+        tagSpan = document.createElement('span');
+        tagSpan.className = 'sn-album-tag';
+        tagSpan.textContent = t;
+        
+        holder.appendChild(tagSpan);
+      }
+    }
+  };
 
 
-                       
   this._pictureDataLoaded = function(fbData) {
     this._fullWidth = 0;
     this._fullHeight = 0;
@@ -44,18 +113,18 @@ J.Snaps = function() {
 
 
     if (fbData === null) {
-      console.log('No picture data received');
+      console.warn('No picture data received');
       return;
     }
 
     if (!fbData.hasOwnProperty('data')) {
-      console.log('Unexpected format for picture data - no "data" property');
+      console.warn('Unexpected format for picture data - no "data" property');
       return;
     }
     
     this._pictureData = fbData['data'];
     if ((this._pictureData instanceof Array) === false) {
-      console.log('Unexpected format - image collection is not an array.');
+      console.warn('Unexpected format - image collection is not an array.');
       this._pictureData = [];
       return;
     }
@@ -91,15 +160,16 @@ J.Snaps = function() {
 
 
       name = currPic['name'] || '';
-      src = currPic['picture'] || ''; // TODO: Default "missing image" icon...
+      src = currPic['source'] || ''; // TODO: Default "missing image" icon...
       // TODO: Blindly passing this url through - security
       
       currEl = document.createElement('div');
-      currEl.className = 'sn-photo';
+      currEl.className = 'sn-photo sn-transition-opacity';
       currEl.style.backgroundImage = 'url(' + src + ')';
       currEl.setAttribute('data-width', width);
       currEl.setAttribute('data-height', height);
       currEl.setAttribute('data-offset', this._fullWidth);
+      currEl.setAttribute('data-idx', ctr);
 
       legend = document.createElement('div');
       legend.className = 'sn-legend';
@@ -123,15 +193,12 @@ J.Snaps = function() {
     this._photosHolder = container;
     this._photosEl.appendChild(this._photosHolder);
  
-
-    // TODO: REMOVE
-    console.log('Total width: ' + this._fullWidth);
-    console.log('Total height: ' + this._fullHeight);
+    this._processPictures();
   };
 
 
   this._pictureDataError = function() {
-    console.log('Problem getting picture Data');
+    console.warn('Problem getting picture Data');
   };
 
 
@@ -155,7 +222,7 @@ J.Snaps = function() {
 
     for (var ctr = 0; ctr < l; ++ctr) {
       curr = els[ctr];
-      if (curr === snapsObj._focusPic)
+      if (curr === snapsObj._focussedPhoto)
         snapsObj._focussedOffset = totalWidth;
 
       targetWidth = parseInt(curr.getAttribute('data-width'));
@@ -166,8 +233,8 @@ J.Snaps = function() {
       
       if (targetHeight > containerHeight) {
         scale = containerHeight / targetHeight;
-        targetHeight = Math.floor(targetHeight * scale);
-        targetWidth = Math.floor(targetWidth * scale);
+        targetHeight = Math.ceil(targetHeight * scale);
+        targetWidth = Math.ceil(targetWidth * scale);
       }
 
       curr.style.width = targetWidth + 'px';
@@ -178,6 +245,117 @@ J.Snaps = function() {
     
     snapsObj._fullWidth = totalWidth;
   };
+
+  this._updatePhotoInfo = (function(snapsObj) {
+    var snaps = snapsObj;
+    var _timerId = null;
+    
+    var photoInfo = snaps._photoInfo;
+    var photoTitle = snaps._photoTitle;
+    var photoComments = snaps._photoComments;
+    var commentContainer = snaps._commentContainer;
+
+    var _cb = function() {
+      var photo = snaps._focussedPhoto;
+      if (photo === undefined || photo === null)
+        return;
+
+
+      if (snaps._currPhotoEl !== null)
+        snaps._currPhotoEl.style.backgroundImage = photo.style.backgroundImage;
+      
+      var idx = photo.getAttribute('data-idx');
+      if (idx === null)
+        return;
+
+      idx = parseInt(idx);
+      if (idx === NaN)
+        reuturn;
+
+      photoComments.removeChild(commentContainer);
+
+      var data = snaps._pictureData[idx];
+
+
+      if (data.hasOwnProperty('name')) {
+        photoTitle.textContent = data['name'];
+        photoTitle.classList.remove('sn-no-name');
+      } else {
+        photoTitle.textContent = 'no name...';
+        photoTitle.classList.add('sn-no-name');
+      }
+
+      commentContainer = document.createElement('div');
+      commentContainer.setAttribute('id', 'sn-comment-container');
+
+      var comments, commentsLen, comment, from, fromId, fromName, message;
+      var commentDiv, stamp, authorPic, cText, cAuthor, cMessage;
+      if (data.hasOwnProperty('comments')) {
+        comments = data.comments;
+        comments = comments.data;
+        if (comments !== undefined) {
+          commentsLen = comments.length;
+          for (var commentCtr = 0; commentCtr < commentsLen; ++commentCtr) {
+            comment = comments[commentCtr];
+            from = comment.from;
+            if (from === undefined) {
+              console.warn('No from field in comment');
+              continue;
+            }
+            
+            fromId = from.id;
+            if (fromId === undefined) {
+              console.warn('No from ID in comment');
+              continue;
+            }
+
+            fromName = from.name || '';
+            message = comment.message || '';
+
+            commentDiv = document.createElement('div');
+            commentDiv.className = 'sn-comment';
+
+            stamp = document.createElement('div');
+            stamp.className = 'sn-stamp';
+            
+            authorPic = document.createElement('img');
+            authorPic.className = 'sn-author-pic'
+            authorPic.src = 'http://graph.facebook.com/' + fromId + '/picture?type=square';
+
+            stamp.appendChild(authorPic);
+
+            cText = document.createElement('div');
+            cAuthor = document.createElement('span');
+            cAuthor.className = 'sn-author'
+            cAuthor.textContent = fromName;
+
+            cMessage = document.createElement('span');
+            cMessage.textContent = message;
+
+            cText.appendChild(cAuthor);
+            cText.appendChild(cMessage);
+            
+            commentDiv.appendChild(stamp);
+            commentDiv.appendChild(cText);
+
+            commentContainer.appendChild(commentDiv);
+          }
+        }
+      } else {
+        commentContainer.textContent = 'no comments...'
+        commentContainer.classList.add('sn-no-comments');
+      }
+
+
+      photoComments.appendChild(commentContainer)
+      snaps._commentContainer = commentContainer;
+    };
+
+    return function() {
+      clearTimeout(_timerId);
+      setTimeout(_cb, 500);
+    };
+  }(this));
 
   // Take a stab at which photo the user is looking at and
   // focus it...
@@ -210,6 +388,12 @@ J.Snaps = function() {
     // The current image
     var currPhoto = null;
 
+    // The currently focussed image
+    var focused  = snapsObj._focussedPhoto;
+
+    // True if we are looking fora new image to focus
+    var needFocus = true;
+
     // Focus all the currently defocussed images
     // TODO: May want to do this separately
     var defoc = snapsObj._defocussedPhotos;
@@ -234,7 +418,7 @@ J.Snaps = function() {
         break; // all remaining photos are offscreen
 
       if (currRight < 0)
-        continue; // current photo os offscreen
+        continue; // current photo is offscreen
       
       if (currRight <= 320) {
         // if current photo is under the photo info panel then
@@ -252,14 +436,38 @@ J.Snaps = function() {
 
       if (showing < (currWidth / 2))
       {
-        //console.log('s: ' + showing + 'w/2: ' + (currWidth / 2));
         currPhoto.classList.add('sn-defocus');
         defoc.push(currPhoto);
+      } else {
+        // If this is the first focused photo then show its info
+        if (needFocus) {
+          needFocus = false;
+
+          if (currPhoto !== focused) {
+            // new focussed photo...
+            snapsObj._focussedPhoto = currPhoto;
+            snapsObj._updatePhotoInfo();
+          }
+        }
       }
     }
 
     snapsObj._defocussedPhotos = defoc;
+    
+    // reset need focus for next time
+    needFocus = true;
   };
+
+  this._pictureClick = (function(that) {
+    return function(e) {
+      that._focussedPhoto = this;
+      that._updatePhotoInfo();
+      that.ShowAsStrip();
+    };
+  }(this));
+
+  $(this._photosEl).on('click', '.sn-photo', {}, this._pictureClick);
+
 
   this._phocusPhotoEventHandler = (function(snapsObj) {
     var timerId = null;
@@ -292,9 +500,10 @@ J.Snaps = function() {
     var cb = function() {
       if (snaps._isStrip == true) {
         snaps._inResizeHandler = true;
-        
+
         snaps._reflowStrip(snaps);
         
+        snaps._photosHolder.style.width = snaps._fullWidth + 'px';
         ph.style.width = snaps._fullWidth;
         container.scrollLeft = snaps._focussedOffset;
 
@@ -312,6 +521,28 @@ J.Snaps = function() {
 
   $(this._photosEl).on('scroll', '', {}, this._phocusPhotoEventHandler);  
   $(window).on('resize', this._resizeEventHandler);
+  
+
+
+  this._fbCallback = jQuery.proxy(
+    function(k, s, d) {
+      if (k == 'j.facebook.statusmessage') {
+        this._progressMessage.firstChild.textContent = d;
+        this._progressMessage.style.display = 'block'              
+      }
+      else if (k === 'j.facebook.gotprofile') {
+        this._albumName.textContent = d.name;
+        J.Facebook.GetUserPhotos();
+        this._progressMessage.style.display = 'none';
+      }
+      else if (k === 'j.facebook.me_photos') {
+        this._pictureDataLoaded(d);
+      }
+    },
+    this
+  );
+  J.Notifications.Subscribe('j.facebook.*', this._fbCallback);
+
 };
 
 
@@ -337,10 +568,10 @@ J.Snaps.prototype = {
       return;
 
 
-    var top = this._photosEl.scrollTop + (this._focusPic.offsetTop - 4);
-    var left = this._focusPic.offsetLeft - 4;
+    var top = this._photosEl.scrollTop + (this._focussedPhoto.offsetTop - 4);
+    var left = this._focussedPhoto.offsetLeft - 4;
 
-    var elOffset = parseInt(this._focusPic.getAttribute('data-offset'));
+    var elOffset = parseInt(this._focussedPhoto.getAttribute('data-offset'));
     if (elOffset === NaN)
       elOffset = 0;
 
@@ -348,15 +579,15 @@ J.Snaps.prototype = {
 
     var containerHeight = this._photosEl.offsetHeight - 24;
     var scale = 1;
-    var targetWidth = this._focusPic.getAttribute('data-width');
-    var targetHeight = this._focusPic.getAttribute('data-height');
+    var targetWidth = this._focussedPhoto.getAttribute('data-width');
+    var targetHeight = this._focussedPhoto.getAttribute('data-height');
     if (targetHeight > containerHeight) {
       scale = containerHeight / targetHeight;
       targetHeight = Math.floor(targetHeight * scale);
       targetWidth = Math.floor(targetWidth * scale);
     }
 
-    this._overlayPic.style.backgroundImage = this._focusPic.style.backgroundImage;
+    this._overlayPic.style.backgroundImage = this._focussedPhoto.style.backgroundImage;
     this._overlayPic.style.visibility = 'visible';
 
     var pe = this._photosEl;
@@ -387,7 +618,7 @@ J.Snaps.prototype = {
                 function() {
 
                   jo.animate(
-                    { top: '149px', left: '328px', width: targetWidth, height: targetHeight }, 500,
+                    { top: '149px', left: '332px', width: targetWidth, height: targetHeight }, 500,
                     'linear',
                     function() {
                       pe.classList.add('sn-strip-mode');
