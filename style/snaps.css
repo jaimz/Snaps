@@ -39,7 +39,8 @@ body
   font-family: HelveticaNeue, Arial, sans-serif;
 }
 
-h1, h2
+#snaps h1,
+#snaps h2
 {
   padding: 0;
   margin: 0;
@@ -108,6 +109,11 @@ h1, h2
   color: rgb(247, 242, 235);
   text-shadow: 0px 1px 1px rgba(0,0,0,0.6);
   padding: 8px 20px 0px 20px;
+}
+
+#sn-album-info h1
+{
+  color: rgb(247, 242, 235);
 }
 
 #sn-album-name
@@ -259,7 +265,7 @@ h1, h2
   display: block;
 }
 
-#sn-photos.sn-strip-mode .sn-photo
+.sn-strip-mode .sn-photo
 {
   background-position: 0 0;
   background-size: cover;
@@ -293,16 +299,17 @@ h1, h2
 
 #sn-photo-info
 {
-    background-color: rgba(50, 48, 46, 0.9);
-    position: fixed;
+  background-color: rgba(50, 48, 46, 0.9);
+  position: absolute;
   width: 320px;
-  height: 100%;
+
   z-index: 200;
   overflow: auto;
   top: 137px;
   left: 0; 
+  bottom: 0;
   
-  display: none;ooo
+  display: none;
 }
 
 #sn-photo-info h1
@@ -429,6 +436,64 @@ h1, h2
 }
 
 
+#sn-nav-ctrls
+{
+
+  position: absolute;
+  
+  font-family: "ColaborateThinRegular","Segoe UI Light","Segoe UI",sans-serif;
+  font-size: 24px;
+
+  height: 26px;
+  padding: 8px;
+
+  
+  color: #453d35;
+  
+  left: 20px;
+  top: 20px;
+}
+
+#sn-back
+{
+   background-color: rgba(216, 209, 203, 0.5);
+   height: 26px;
+   line-height: 26px;
+   padding: 8px;
+   
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  margin-right: 1px;
+}
+
+#sn-back:hover,
+#sn-nav-ctrls .j-logout-button:hover
+{
+  background-color: rgba(216, 209, 203, 0.8);
+  cursor: pointer;
+}
+
+#sn-nav-ctrls .j-logout-button
+{
+   background-color: rgba(216, 209, 203, 0.5);
+   height: 26px;
+   line-height: 26px;
+   padding: 8px;
+   
+     border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;  
+}
+
+#sn-nav-ctrls.j-unauthenticated .j-logout-button
+{
+  display: none;
+}
+
+.sn-grid-mode #sn-back
+{
+  display: none;
+}
+
 #sn-progress-message
 {
   background-color: rgba(216, 209, 203, 0.5);
@@ -450,6 +515,7 @@ h1, h2
   top: 86px;
 }
 
+
 .sn-no-name,
 .sn-no-comments
 {
@@ -457,6 +523,11 @@ h1, h2
     color: rgba(165, 156, 145, 0.5) !important;
     font-family: "ColaborateThinRegular", "Segoe UI Light", "Segoe UI", sans-serif;
     text-align: center;
+}
+
+.sn-no-comments
+{
+  margin-top: 100px;
 }
 
 #sn-curr-photo

@@ -6,11 +6,9 @@
     <link rel='stylesheet' href='./style/snaps.css'></link>
     <link rel='stylesheet' href='./style/social_buttons.css'></link>    
   </head>
-  <body>
+  <body id='snaps' class='sn-grid-mode'>
 
     <section class='sn-controls'></section>
-
-
 
     <section id='sn-album'>
       <section id='sn-album-bg' class='blurred'></section>
@@ -29,14 +27,16 @@
         </header>
       </section>
 
+      <section id="sn-nav-ctrls" class='j-unauthenticated'>
+        <span id='sn-back'>&lt; Back to album</span><span class='j-logout-button'>Sign out of Facebook</span>
+      </section>
+
       <section id='sn-progress-message'>
         <span></span>
       </section>
 
       <div class='sn-photo' id='sn-overlay-photo'></div>
       
-      <!-- TODO: Put this back in! -->
-      <!--
       <section id='sn-facebook-login'>
         <button class='social_buttons sb_24 sb_facebook j-login-button'>
           <span>Sign in to Facebook...</span>
@@ -56,24 +56,24 @@
         </div>
         
       </section>
-      -->
+
+      
+      <section id='sn-photo-info'>
+        <h1>
+          <div id='sn-curr-photo'>
+          </div>
+          <span id='sn-photo-name'></span>
+        </h1>
+        <section id='sn-photo-comments'>
+          <div id='sn-comment-container'>
+          </div>
+        </section>
+      </section>
       
       <section id='sn-photos'>
 
         <div id='sn-photo-holder'></div>
         
-
-        <section id='sn-photo-info'>
-          <h1>
-            <div id='sn-curr-photo'>
-            </div>
-            <span id='sn-photo-name'></span>
-          </h1>
-          <section id='sn-photo-comments'>
-            <div id='sn-comment-container'>
-            </div>
-          </section>
-        </section>
       </section>
       
 
@@ -89,8 +89,8 @@
     
     <div id='fb-root'></div>
 
-<!--    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script> -->
-    <script src='./script/jquery-1.7.1.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+<!--    <script src='./script/jquery-1.7.1.min.js'></script> -->
     <script src='./script/base.js'></script>
     <script src='./script/notification_center.js'></script>
     <script src='./script/fb.js'></script>
@@ -98,13 +98,13 @@
     
     
     <script>
-
+  
       var snaps = new J.Snaps();
       
-      J.Notifications.Subscribe('j.facebook.*', function(k, s, d) { console.log('Got: '+k); });
-
+  
       J.HasFBAuth(document.getElementById('sn-facebook-login'));
-
+      J.HasFBAuth(document.getElementById('sn-nav-ctrls'));
+  
       $(document).ready(function() {
         $('#notification_button').click(
           function() {
@@ -129,10 +129,10 @@
           }
         );
         
-        //J.Facebook.Init();
-        //J.Facebook.Start();
+        J.Facebook.Init();
+        J.Facebook.Start();
         
-        snaps.LoadPictures('http://localhost/snaps/test_images2.json');
+        //snaps.LoadPictures('http://localhost/snaps/test_images2.json');
       });
     </script>
   </body>

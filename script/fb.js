@@ -56,14 +56,14 @@ J.Facebook = (function() {
 
   var _loadPhotos = (function() {
     var __received = function(response) {
-//      console.log(response);
       // TODO: ERROR CHECKING
       J.Notifications.Notify('j.facebook.me_photos', J.Facebook, response);
     };
     
     return function() {
       J.Notifications.Notify('j.facebook.statusmessage', J.Facebook, 'Loading photos...');
-      FB.api('/me/photos', __received);
+      FB.api('/'+ J.Facebook.GetUserProfile().id +'/photos', __received);
+//      FB.api('/me/photos', __received);
     };
   }());
 
@@ -105,7 +105,7 @@ J.Facebook = (function() {
     return function() {
       J.Notifications.Notify('j.facebook.statusmessage', J.Facebook, 'Signing in...');    
       // TODO: User should be able to configure the permissions
-      FB.login(__loginComplete, { scope : 'read_stream,publish_stream,offline_access' });
+      FB.login(__loginComplete, { scope : 'read_stream,publish_stream,offline_access,user_photos,user_photo_video_tags' });
     };
   }());
 
@@ -118,9 +118,9 @@ J.Facebook = (function() {
         var msg = "Could not log out"
         if (response && response.error)
           msg = msg + ': '+response.error;
-        J.Notifications.Notify('fb.error.message', msg);
+        J.Notifications.Notify('j.facebook.errormessage', msg);
       } else {
-        J.Notifications.Notify('fb.loggedout', J.Facebook, null);
+        J.Notifications.Notify('j.facebook.loggedout', J.Facebook, null);
       }
     };
 

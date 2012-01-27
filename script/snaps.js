@@ -6,6 +6,12 @@ J.Snaps = function() {
   this._fullHeight = 0;
   this._focusArea = 0;
 
+  this._snapsEl = document.getElementById('snaps');
+  if (this._snapsEl === null) {
+    console.warn('No snaps element found');
+    return;
+  }
+
   this._photosEl = document.getElementById('sn-photos');
   if (this._photosEl === null)
     console.warn("Can't find photos element!");
@@ -36,7 +42,7 @@ J.Snaps = function() {
   this._photoComments = document.getElementById('sn-photo-comments');
   this._commentContainer = document.getElementById('sn-comment-container');
   
-
+  this._backToAlbumButton = document.getElementById('sn-back');
  
 
   this._processPictures = function() {
@@ -206,7 +212,7 @@ J.Snaps = function() {
     if (snapsObj._photosHolder === null)
       return;
     
-    var containerHeight = snapsObj._photosEl.offsetHeight - 24;
+    var containerHeight = snapsObj._photosEl.offsetHeight - 36;
 
     // Focus area is the width of the window - the width of 
     // the photo info window panel
@@ -457,6 +463,9 @@ J.Snaps = function() {
     // reset need focus for next time
     needFocus = true;
   };
+  
+
+  
 
   this._pictureClick = (function(that) {
     return function(e) {
@@ -469,6 +478,7 @@ J.Snaps = function() {
   $(this._photosEl).on('click', '.sn-photo', {}, this._pictureClick);
 
 
+
   this._phocusPhotoEventHandler = (function(snapsObj) {
     var timerId = null;
     var snaps = snapsObj;
@@ -479,7 +489,7 @@ J.Snaps = function() {
     };
 
     return function(e) {
-      if (snaps._inResizeHandler)
+      if (snaps._isStrip === false || snaps._inResizeHandler === true)
         return;
 
       clearTimeout(timerId);
@@ -522,6 +532,25 @@ J.Snaps = function() {
   $(this._photosEl).on('scroll', '', {}, this._phocusPhotoEventHandler);  
   $(window).on('resize', this._resizeEventHandler);
   
+  
+  this._pictureClick = (function(that) {
+    return function(e) {
+      that._focussedPhoto = this;
+      that._updatePhotoInfo();
+      that.ShowAsStrip();
+    };
+  }(this));
+  $(this._photosEl).on('click', '.sn-photo', {}, this._pictureClick);
+
+
+  this._showAlbumClick = (function (that) {
+    return function(e) {
+      that.ShowAsGrid();
+    }
+  }(this));
+  $(this._backToAlbumButton).on('click', this._showAlbumClick);
+  
+
 
 
   this._fbCallback = jQuery.proxy(
@@ -532,11 +561,18 @@ J.Snaps = function() {
       }
       else if (k === 'j.facebook.gotprofile') {
         this._albumName.textContent = d.name;
+        this._progressMessage.firstChild.textContent = 'Loading photos...';
         J.Facebook.GetUserPhotos();
-        this._progressMessage.style.display = 'none';
       }
       else if (k === 'j.facebook.me_photos') {
         this._pictureDataLoaded(d);
+        this._progressMessage.style.display = 'none';
+      }
+      else if (k === 'j.facebook.loggedout') {
+        this._progressMessage.style.display = 'none';
+        this._pictureDataLoaded({ data:[] });
+        this._photosEl.removeChild(this._photosHolder);
+        this._photosHolder = null;
       }
     },
     this
@@ -577,7 +613,7 @@ J.Snaps.prototype = {
 
     var scrollOffset = elOffset - (left - 12);
 
-    var containerHeight = this._photosEl.offsetHeight - 24;
+    var containerHeight = this._photosEl.offsetHeight - 36;
     var scale = 1;
     var targetWidth = this._focussedPhoto.getAttribute('data-width');
     var targetHeight = this._focussedPhoto.getAttribute('data-height');
@@ -590,6 +626,7 @@ J.Snaps.prototype = {
     this._overlayPic.style.backgroundImage = this._focussedPhoto.style.backgroundImage;
     this._overlayPic.style.visibility = 'visible';
 
+    var sn = this._snapsEl;
     var pe = this._photosEl;
     var jpe = jQuery(pe);
 
@@ -621,7 +658,8 @@ J.Snaps.prototype = {
                     { top: '149px', left: '332px', width: targetWidth, height: targetHeight }, 500,
                     'linear',
                     function() {
-                      pe.classList.add('sn-strip-mode');
+                      sn.classList.remove('sn-grid-mode');
+                      sn.classList.add('sn-strip-mode');
 
                       reflow(that);
 
@@ -650,8 +688,20 @@ J.Snaps.prototype = {
     if (this._photosHolder === null)
       return;
     
-    this._photosHolder.classList.remove('sn-strip-mode');
+    this._isStrip = false;
+    this._snapsEl.classList.remove('sn-strip-mode');
     this._photosHolder.style.width = '100%';
+
+    var defoc = this._defocussedElements;
+    if (defoc) {
+      var defocLen = defoc.length;
+      for (var ctr = 0; ctr < defocLen; ++ctr) {
+        defoc[ctr].classList.remove('sn-defocus');
+      }
+    }
+    
+    this._defocussedElements = [];
+    
 
     var els = this._pictureElements;
     var l = els.length;
@@ -662,6 +712,7 @@ J.Snaps.prototype = {
       curr.style.height = null;
     }
 
-    this._isStrip = false;
+    this._snapsEl.classList.add('sn-grid-mode');
+
   }
 };
