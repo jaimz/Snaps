@@ -18,3 +18,13 @@ script/.#snaps.js
 script/#snaps.js#
 
 test_images.json~
+
+script/snaps_tags.js
+
+*.js~
+*.json~
+images/HK_Skyline_1024.jpg
+snaps_design copy.png
+snaps_design.png
+test_images2.json
+tmp/
