@@ -79,17 +79,14 @@
 
     </section>
     
-    <section id='sn-debug-ctrls'>
-      <input type='text' value="j.facebook.loggedin" id='not_name'></input>
-      <input type='button' value='Test notifications' id='notification_button'></input>
-      <input type="button" value="Load pictures" id='load_button'></input>
-      <input type="button" value="Show strip" id='strip_button'></input>
-      <input type="button" value="Show grid" id='grid_button'></input>
-    </section>
     
     <div id='fb-root'></div>
 
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script src='./script/classlist.js/classlist.min.js'></script>
+    <script src='./script/jspos/lexicon.js'></script>
+    <script src='./script/jspos/lexer.js'></script>
+    <script src='./script/jspos/POSTagger.js'></script>
 <!--    <script src='./script/jquery-1.7.1.min.js'></script> -->
     <script src='./script/base.js'></script>
     <script src='./script/notification_center.js'></script>
@@ -106,29 +103,7 @@
       J.HasFBAuth(document.getElementById('sn-nav-ctrls'));
   
       $(document).ready(function() {
-        $('#notification_button').click(
-          function() {
-            var n = $('#not_name').val();
-            J.Notifications.Notify(n, null, null);
-          });
-          
-        $('#load_button').click(
-          function() { 
-            snaps.LoadPictures('http://localhost/snaps/test_images.json');
-          });
-          
-        $('#strip_button').click(
-          function() {
-            snaps.ShowAsStrip();
-          }
-        );
-        
-        $('#grid_button').click(
-          function() {
-            snaps.ShowAsGrid();
-          }
-        );
-        
+                
         J.Facebook.Init();
         J.Facebook.Start();
         

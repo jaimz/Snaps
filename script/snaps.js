@@ -1,51 +1,280 @@
+// requires base.js
+
 J.Snaps = function() {
+  // The picture data array from Facebook
   this._pictureData = [];
+  
+  // The DOM element displaying the photos
   this._pictureElements = [];
 
+  // Full width of the panel containing the photos - used
+  // to calculate scroll offsets
   this._fullWidth = 0;
+  
+  // Full height of the panel containing the photos - used to
+  // layout photos s.t. they fit inside this panel
   this._fullHeight = 0;
-  this._focusArea = 0;
 
+
+  // The top level element, the root of the snaps UI
   this._snapsEl = document.getElementById('snaps');
   if (this._snapsEl === null) {
     console.warn('No snaps element found');
     return;
   }
 
+
+  // The element displaying the photos
   this._photosEl = document.getElementById('sn-photos');
   if (this._photosEl === null)
     console.warn("Can't find photos element!");
 
+
+  // The element used to contain the photos - this will have it's size changed
+  // according to whether we are in strip or grid mode
   // Doesn't matter if this is null - will re-create when pictures are loaded
   this._photosHolder = document.getElementById('sn-photo-holder');
 
+
+  // Used to provide a 'zooming' effect when a photo is clicked.  
   this._overlayPic = document.getElementById('sn-overlay-photo');
   
+  // The element displaying the name of the current album
   this._albumName = document.getElementById('sn-album-name');
 
+
+  // The element displaying progress messages
   this._progressMessage = document.getElementById('sn-progress-message');
 
-  this._tagsHolder = document.getElementById('sn-album-tags');
+  // The tags for the current album
+  this._tags = [];
 
-  this._currPhotoEl = document.getElementById('sn-curr-photo');
+  // The element displaying the tags of the current album
+  this._tagsHolder = document.getElementById('sn-album-tags');
+  
+
+
+  // The currently focussed photo
   this._focussedPhoto = null;
+  
+  // The x offset of the currently focussed photo - used to set
+  // the scroll point of the photo container
   this._focussedOffset = 0;
 
+  // A thumbnail of the currently focussed photo
+  this._currPhotoEl = document.getElementById('sn-curr-photo');
+  
+  // True if we are currently in strip mode
   this._isStrip = false;
 
+  // True if we are handling a window resize event (used to disable
+  // scroll events while this is happening)
   this._inResizeHandler = false;
 
+  // A map, names -> count, that records the people tagged in this album
+  // and how many times they have been tagged: e.g. { "Katy" : 10 }
   this._nameCount = {};
 
+  // The root element of the info display for the currently focussed photo
   this._photoInfo = document.getElementById('sn-photo-info');
+  
+  // The element displaying the name of the currently focused photo
   this._photoTitle = document.getElementById('sn-photo-name');
+  
+  // The element containing all the comments on the currently focussed photo
   this._photoComments = document.getElementById('sn-photo-comments');
+  
+  // Convenience element that contains sub elements representing photo comments.
+  // Minimises the amount of DOM fiddling we have to do
   this._commentContainer = document.getElementById('sn-comment-container');
   
+  // Button that puts us into grid mode
   this._backToAlbumButton = document.getElementById('sn-back');
  
 
+  // Reset the UI - get rid of the photos & photo elements, reset the album name,
+  // etc. Called when the user log out of Facebook.
+  this._reset = function() {
+    if (this._isStrip) {
+      this.ShowAsGrid();
+    }
+
+    this._progressMessage.style.display = 'none';
+    this._pictureDataLoaded({ data:[] });
+    this._photosEl.removeChild(this._photosHolder);
+    this._photosHolder = null;
+    
+    this._photoTitle.textContent = "";
+    
+    if (this._commentContainer !== null) {
+      this._photoComments.removeChild(this._commentContainer);
+    }
+    
+    this._albumName.textContent = 'Snaps 2012';
+    var holder = this._tagsHolder;
+    while (holder.childElementCount > 0) {
+      holder.removeChild(holder.firstChild);
+    }
+  };
+  
+  this._addTagToCollection = function(tag, tagCollection) {
+    if (tagCollection.hasOwnProperty(tag))
+      tagCollection[tag] = tagCollection[tag] + 1;
+    else
+      tagCollection[tag] = 1;
+  };
+
+
+  this._collectTagsFromText = (function() {
+    var _lexer = new Lexer();
+    var _tagger = new POSTagger();
+
+    return function(text, tagCollection) {
+      if (!text)
+        return;
+
+      var words = _lexer.lex(text);
+      if (words.length === 0)
+        return;
+
+      var tags = _tagger.tag(words);
+
+      var idx = 0;
+      var curr = [];
+      var currTag = null;
+      var currNoun = null;
+      var tagCount = tags.length;
+
+      while (idx < tagCount) {
+        if (tags[idx][1] === 'NNP') {
+          curr.push(tags[idx][0]);
+        } else {
+          if (curr.length > 0) {
+            this._addTagToCollection(curr.join(' '), tagCollection);
+//            this.tags.push(curr.join(' '));
+            curr = [];
+          }
+        }
+
+        idx += 1;
+      }
+    };
+  }());
+
+
+  this._clearTagElements = function() {
+    if (!this._tagsHolder)
+      return;
+    
+    var holder = this._tagsHolder;
+    while (holder.childElementCount > 0)
+      holder.removeChild(holder.firstChild);
+  };
+ 
+  this._generateTagElements = function(tagCollection) {
+  	// TODO: REMOVE
+  	console.log(tagCollection);
+  	
+    if (!this._tagsHolder)
+      return;
+
+    var holder = this._tagsHolder;
+    
+    
+    var list = J.SortObject(tagCollection);
+    
+    var tagSpan = null;
+    var tagCount = list.length;
+    var idx = tagCount - 1;
+    var containerSpan = document.createElement('span');
+    
+    // Uncomment this and the 'idx -= 1' below to have *most*
+    // common tags first..
+//    while (idx >= 0) {
+    for (var idx = 0; idx < tagCount; ++idx) {
+      tagSpan = document.createElement('span');
+      tagSpan.className = 'sn-album-tag';
+      tagSpan.textContent = list[idx];
+
+      holder.appendChild(tagSpan);
+      
+//      idx -= 1;
+    }
+
+    holder.appendChild(containerSpan);
+  };
+
+
+  
+  // Scan through the data for all the pictures in the album, picking out interesting 
+  // tags to show under the album name. Right now we just pick out names of people 
+  // tagged in the album
   this._processPictures = function() {
+    this._clearTagElements();
+
+    if (this._pictureData === null)
+      return;
+    
+    var l = this._pictureData.length;
+    if (l === 0)
+      return;
+
+    var pics = this._pictureData;
+    var curr = null;
+    var name = null;
+
+    var fbData = null;
+    var fbCurr = null;
+    var fbDataLen = 0;
+
+    var collectedTags = {};
+
+    for (var ctr = 0; ctr < l; ++ctr) {
+      curr = pics[ctr];
+      if (curr.hasOwnProperty('from')) {
+        name = curr.from.name;
+        if (name !== 'undefined')
+          this._addTagToCollection(name, collectedTags);
+      }
+
+      if (curr.hasOwnProperty('tags')) {
+        fbData = curr.tags;
+        fbData = fbData.data;
+        if (fbData !== undefined) {
+          fbDataLen = fbData.length;
+          for (var fbCtr = 0; fbCtr < fbDataLen; ++fbCtr) {
+            name = fbData[fbCtr].name;
+            if (name !== undefined)
+              this._addTagToCollection(name, collectedTags);
+          }
+        }
+      }
+
+      if (curr.hasOwnProperty('comments')) {
+        fbData = curr.comments;
+        fbData = curr.comments.data;
+        if (fbData !== undefined) {
+          fbDataLen = fbData.length;
+          for (var fbCtr = 0; fbCtr < fbDataLen; ++fbCtr) {
+            fbCurr = fbData[fbCtr];
+            if (fbCurr.hasOwnProperty('from')) {
+              name = fbCurr.from.name;
+              if (name !== undefined)
+                this._addTagToCollection(name, collectedTags);
+            }
+            
+            if (fbCurr.hasOwnProperty('message'))
+              this._collectTagsFromText(fbCurr.message, collectedTags);
+          }
+        }
+      }
+	}
+	
+	this._generateTagElements(collectedTags);
+  };
+
+  
+/*  this._processPictures = function() {
     if (this._pictureData === null)
       return;
     
@@ -86,10 +315,13 @@ J.Snaps = function() {
         }
       }
       
-      // TODO: comments
+      // TODO: scan comments
+      // TODO: NLP magic on comments/tags to pick out more interesting 
+      // tag words
     }
     
 
+    // Populate the tags holder with the tags we've identified
     if (this._tagsHolder) {
       var holder = this._tagsHolder;
       while (holder.childElementCount > 0) {
@@ -106,9 +338,16 @@ J.Snaps = function() {
         holder.appendChild(tagSpan);
       }
     }
-  };
+  }; */
 
 
+  // A new album is being displayed containing the given picture data (in 
+  // Facebook format) - run through the data creating an element for each photo,
+  // then show those elements.
+  //
+  // This will set _fullWidth and _fullHeight to be the width and height of the
+  // photo holder element assuming we did not have to shrink the photos to fit the
+  // y-height of the container. Which we probably will have to.
   this._pictureDataLoaded = function(fbData) {
     this._fullWidth = 0;
     this._fullHeight = 0;
@@ -166,9 +405,10 @@ J.Snaps = function() {
 
 
       name = currPic['name'] || '';
-      src = currPic['source'] || ''; // TODO: Default "missing image" icon...
+
       // TODO: Blindly passing this url through - security
-      
+      src = currPic['source'] || ''; // TODO: Default "missing image" icon...
+
       currEl = document.createElement('div');
       currEl.className = 'sn-photo sn-transition-opacity';
       currEl.style.backgroundImage = 'url(' + src + ')';
@@ -191,9 +431,10 @@ J.Snaps = function() {
     }
 
 
-    // TODO: Nicer transition...
+    // TODO: Nicer transitiion, fade the new photos in or something
     if (this._photosHolder !== null)
       this._photosEl.removeChild(this._photosHolder);
+
 
     container.setAttribute('id', 'sn-photo-holder');
     this._photosHolder = container;
@@ -203,20 +444,22 @@ J.Snaps = function() {
   };
 
 
+  // Problem getting picture data
   this._pictureDataError = function() {
     console.warn('Problem getting picture Data');
   };
 
 
+
+  // Reflow the photo holder such that no photo is taller than
+  // _photoEl's height. _fullWidth is set to the cumulative width
+  // of all the photos given the current aspect ratio
   this._reflowStrip = function(snapsObj) {
     if (snapsObj._photosHolder === null)
       return;
     
+    // '36' to accommodate padding etc.
     var containerHeight = snapsObj._photosEl.offsetHeight - 36;
-
-    // Focus area is the width of the window - the width of 
-    // the photo info window panel
-    snapsObj._focusArea = snapsObj._photosEl.offsetWidth - 320;
 
 
     var els = snapsObj._pictureElements;
@@ -366,8 +609,8 @@ J.Snaps = function() {
   // Take a stab at which photo the user is looking at and
   // focus it...
   this._focusPhoto = function(snapsObj) {
-    if (snapsObj._focusArea === 0)
-      return;
+//    if (snapsObj._focusArea === 0)
+//      return;
 
     var photos = snapsObj._pictureElements;
     if (!photos)
@@ -568,11 +811,17 @@ J.Snaps = function() {
         this._pictureDataLoaded(d);
         this._progressMessage.style.display = 'none';
       }
+      else if (k === 'j.facebook.notloggedin') {
+        this._progressMessage.style.display = 'none'
+      }
       else if (k === 'j.facebook.loggedout') {
+      /*
         this._progressMessage.style.display = 'none';
         this._pictureDataLoaded({ data:[] });
         this._photosEl.removeChild(this._photosHolder);
         this._photosHolder = null;
+        */
+        this._reset();
       }
     },
     this

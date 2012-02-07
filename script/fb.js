@@ -1,5 +1,4 @@
-if (typeof(J) === 'undefined')
-  J = {};
+J = J || {};
 
 
 J.Facebook = (function() {
@@ -13,7 +12,7 @@ J.Facebook = (function() {
   var _profile = null;
 
   // Initialise the module...
-  // TODO: Err - what should this actuall do??
+  // TODO: Err - what should this actually do??
   var _init = function() {
     if (_initialised === true)
       return;
@@ -48,7 +47,7 @@ J.Facebook = (function() {
     };
     
     return function() {
-      J.Notifications.Notify('j.facebook.statusmessage', J.Facebook, 'Loading profile…');
+      J.Notifications.Notify('j.facebook.statusmessage', J.Facebook, 'Loading profile...');
       FB.api('/me', __received);
     };
   }());
@@ -75,7 +74,7 @@ J.Facebook = (function() {
     var __loginStatusResult = function(response) {
       _session = response.authResponse;
       
-      var key = (_session === null) ? 'j.facebook.loggedout' : 'j.facebook.loggedin';
+      var key = (_session === null) ? 'j.facebook.notloggedin' : 'j.facebook.loggedin';
       J.Notifications.Notify(key, J.Facebook, null);
 
       if (_session !== null)      
@@ -179,20 +178,29 @@ J.HasFBAuth = (function() {
       var l = _authDialogs.length;
       for (var ctr = 0; ctr < l; ++ctr) {
         _authDialogs[ctr].classList.remove('j-unauthenticated');
-        _authDialogs[ctr].classList.remove('j-unauthenticating');
+        _authDialogs[ctr].classList.remove('j-authenticating');
         _authDialogs[ctr].classList.add('j-authenticated');
       }
     }
   );
   
-  J.Notifications.Subscribe('j.facebook.loggedout',
-    function() {
-      var l = _authDialogs.length;
-      for (var ctr = 0; ctr < l; ++ctr) {
-        _authDialogs[ctr].classList.remove('j-authenticated');
-      }
+  var removeAuth = function() {
+    var l = _authDialogs.length;
+    for (var ctr = 0; ctr < l; ++ctr) {
+      _authDialogs[ctr].classList.remove('j-authenticated');
+      _authDialogs[ctr].classList.remove('j-authenticating');
+      _authDialogs[ctr].classList.add('j-unauthenticated');
     }
+  }
+
+  J.Notifications.Subscribe('j.facebook.loggedout',
+    removeAuth
   );
+  
+  J.Notifications.Subscribe('j.facebook.notloggedin',
+    removeAuth
+  );
+
 
   J.Notifications.Subscribe('j.fb.autherror',
     function() {

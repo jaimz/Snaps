@@ -38,3 +38,96 @@ J.Mix = function(receiver, mixin) {
     }
   }
 };
+
+J.SortObject = function(obj) {
+  var count = [];
+  var result = [];
+  
+  var l = 0;
+  var curr, curr_count;
+  var highest_count = 0;
+  
+  for (k in obj) {
+    curr_count = obj[k];
+    
+    if (curr_count > highest_count)
+      highest_count = curr_count;
+      
+    if (count[curr_count] !== undefined)
+      count[curr_count] = count[curr_count] + 1;
+    else
+      count[curr_count] = 1;
+  }
+  
+  for (var ctr = 0; ctr <= highest_count; ++ctr) {
+    if (count[ctr] === undefined)
+      count[ctr] = 0;
+  }
+  
+  var total = 0;
+  var c;
+  for (var ctr = 0; ctr <= highest_count; ++ctr) {
+    c = count[ctr];
+    count[ctr] = total;
+    total = total + c;
+  }
+  
+  var result_idx = 0;
+  for (k in obj) {
+    curr_count = obj[k];
+    result_idx = count[curr_count];
+    
+    result[result_idx] = k;
+    count[curr_count] = count[curr_count] + 1;
+  }
+  
+  return result;
+};
+
+J.CountingSort = function(to_sort) {
+  var count = [];
+  var result = [];
+  
+  var l = to_sort.length;
+  var curr, curr_count;
+  var highest_count = 0;
+  for (var ctr = 0; ctr < l; ++ctr) {
+    curr = to_sort[ctr];
+    curr_count = curr.count;
+
+    if (curr_count > highest_count)
+      highest_count = curr_count;
+
+    if (count[curr_count] !== undefined)
+      count[curr_count] = count[curr_count] + 1;
+    else
+      count[curr_count] = 1;
+  }
+    
+
+  for (var ctr = 0; ctr <= highest_count; ++ctr) {
+    if (count[ctr] === undefined)
+      count[ctr] = 0;
+  }
+
+
+  var total = 0;
+  var c;
+  for (var ctr = 0; ctr <= highest_count; ++ctr) {
+    c = count[ctr];
+    count[ctr] = total;
+    total = total + c;
+  }
+
+  var result_idx = 0;
+  for (var ctr = 0; ctr < l; ++ctr) {
+    curr = to_sort[ctr];
+    curr_count = curr.count;
+    result_idx  = count[curr_count];
+
+    result[result_idx] = curr;
+    count[curr_count] = count[curr_count] + 1;
+  }
+
+  return result;
+};
