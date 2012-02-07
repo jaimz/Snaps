@@ -1,15 +1,8 @@
 Snaps:
 	- Facebook
-		- Extract tags from comments, NLP
-		- Logout
-
-		- Gritty scrolling
-		- Transition not pixel-perfect.
-		- Bug when resizing window
 		- Photo zoom
 		- scroll a whole photo on cursor key press
 		- ATD on visuals
-
 		- Friends albums
-
+		- Gritty scrolling
 
