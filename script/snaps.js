@@ -315,6 +315,7 @@
       this._photosStrip.width(cumulative_width + (8 * photos.length));
     },
 
+
     _scrollToPhoto: function(photo, callback) {
       var curr_scroll_left = this._photosHolder.scrollLeft() - this._ui.offset().left;
 
@@ -324,7 +325,6 @@
         this._photosHolder.animate({ scrollLeft : scroll_to }, callback);
       else
         this._photosHolder.animate({ scrollLeft : scroll_to });
-        
     },
     
 
@@ -357,7 +357,7 @@
     Reset : function() {
       this._album.Clear();
       this.ShowAsGrid();
-    },
+    }
 
   };
 }());
